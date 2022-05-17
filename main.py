@@ -81,8 +81,8 @@ for usuario in usrs:
         print("An exception occurred 2")
 
 #en caso de que todo este bien
-    try:
-       if msg=='':
+
+    if msg=='':
             msg = 'OK'
             print(msg)
             resultado.append(msg)
@@ -91,25 +91,21 @@ for usuario in usrs:
             driver.find_element(By.XPATH, '//*[@id="pantalla:listaVallistaValores"]/tbody/tr/td[9]/div/a').click()
 
             driver.find_element(By.XPATH, '//*[@id="panelbotones"]/div[3]/img').click()
-
+            time.sleep(1)
             driver.find_element(By.XPATH, '//*[@id="pantalla:tabladocumentosGroup"]/table[1]/tbody/tr/td[3]/a/i').click()
-    except:
-        print("An exception occurred 3")
+
 
 
 #Se abre el libro para poner los mensajes de resultado
 wb = load_workbook(filename='suma.xlsx')
 sheet_ranges = wb['Suma']
-#sheet_ranges['C'+str(3)]='hola'
-#sheet_ranges['C4']='adios'
-
 count=2
 print("--------------------------------")
 for items in resultado:
     #se insertan los valores de los resultados
     sheet_ranges['C'+str(count)]=items
     count+=1
-    print(count)
+
 #se guardan los cambios
 wb.save('suma.xlsx')
 #se cierra el libro
