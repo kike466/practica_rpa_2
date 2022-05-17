@@ -2,8 +2,6 @@ import time
 from openpyxl import load_workbook
 from selenium.webdriver import ActionChains, Keys
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 from usuarios import usuario
 from selenium import webdriver
@@ -99,7 +97,6 @@ for usuario in usrs:
         print("An exception occurred 3")
 
 
-
 #Se abre el libro para poner los mensajes de resultado
 wb = load_workbook(filename='suma.xlsx')
 sheet_ranges = wb['Suma']
@@ -117,6 +114,7 @@ for items in resultado:
 wb.save('suma.xlsx')
 #se cierra el libro
 wb.close()
+driver.close()
 
 
 
