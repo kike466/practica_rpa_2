@@ -89,9 +89,12 @@ for usuario in usrs:
             print(msg)
             resultado.append(msg)
             time.sleep(1)
+            #descargar pdf
             driver.find_element(By.XPATH, '//*[@id="pantalla:listaVallistaValores"]/tbody/tr/td[9]/div/a').click()
+
             driver.find_element(By.XPATH, '//*[@id="panelbotones"]/div[3]/img').click()
-            # driver.find_element(By.XPATH, '//*[@id="pantalla:tabladocumentosGroup"]/table[1]/tbody/tr/td[3]/a/i').click()
+
+            driver.find_element(By.XPATH, '//*[@id="pantalla:tabladocumentosGroup"]/table[1]/tbody/tr/td[3]/a/i').click()
     except:
         print("An exception occurred 3")
 
