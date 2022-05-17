@@ -23,7 +23,7 @@ for c1, c2 in sheet_ranges['A2':'B13']:
 wb.close()
 
 #iniciamos el driver de chromedriver
-driver = webdriver.Chrome(r'C:\Users\Usuario\Downloads\chromedriver_win32\chromedriver.exe')
+driver = webdriver.Chrome(r'C:\Cursos\Python\Consulta de recibos en SUMA\chromedriver_win32\chromedriver.exe')
 #maximizamos la ventana
 driver.maximize_window()
 #accedemos a una url
