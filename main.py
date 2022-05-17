@@ -58,7 +58,7 @@ for usuario in usrs:
     elemento_Matricula.send_keys(usuario.get_Matricula())
 
     time.sleep(1)
-    #click en el icono de lupa
+    #click en el enviar
     driver.find_element(By.ID, 'pantalla:obtenerRecibos').click()
     time.sleep(1)
 
