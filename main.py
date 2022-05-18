@@ -2,6 +2,8 @@ import time
 from openpyxl import load_workbook
 from selenium.webdriver import ActionChains, Keys
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 from usuarios import usuario
 from selenium import webdriver
@@ -23,7 +25,7 @@ for c1, c2 in sheet_ranges['A2':'B13']:
 wb.close()
 
 #iniciamos el driver de chromedriver
-driver = webdriver.Chrome(r'C:\Cursos\Python\Consulta de recibos en SUMA\chromedriver_win32\chromedriver.exe')
+driver = webdriver.Chrome(r'chromedriver_win32\chromedriver.exe')
 #maximizamos la ventana
 driver.maximize_window()
 #accedemos a una url
@@ -33,8 +35,13 @@ time.sleep(1)
 #action chains nos permite interactuar con los elementos
 achain = ActionChains(driver)
 #hacemos el hover del contribuyentes
-elemento = driver.find_element(By.XPATH, '//*[@id="navbarNavDropdown"]/ul/li[1]')
-achain.move_to_element(elemento).click().perform()
+search=WebDriverWait(driver,10).until(
+    EC.presence_of_element_located(
+        (By.XPATH, '//*[@id="navbarNavDropdown"]/ul/li[1]')
+   )
+)
+
+achain.move_to_element(search).click().perform()
 
 time.sleep(1)
 # click en obtener recibo
