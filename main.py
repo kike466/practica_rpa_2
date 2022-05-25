@@ -1,4 +1,10 @@
+import smtplib
 import time
+from email import encoders
+from email.mime.base import MIMEBase
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 from openpyxl import load_workbook
 from selenium.webdriver import ActionChains, Keys
 from selenium.webdriver.common.by import By
@@ -7,6 +13,11 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from usuarios import usuario
 from selenium import webdriver
+
+import glob
+import os
+
+
 
 #Se abre el libro del excel y se extraen el DNI y la matriula
 wb = load_workbook(filename='suma.xlsx')
@@ -51,6 +62,58 @@ time.sleep(1)
 driver.find_element(By.LINK_TEXT, 'Con el número fijo (periodo voluntario)').click()
 #se ban buscando resultados para cada usuario
 resultado=[]
+
+
+def obtener_ultimo_fichero():
+    # obtener el ultimo fichero descargado
+    list_of_files = glob.glob(r'C:\Users\Usuario\Downloads\*.pdf')  # * means all if need specific format then *.csv
+    latest_file = max(list_of_files, key=os.path.getctime)
+    print("Ultima descarga")
+    print(latest_file)
+    return latest_file
+
+message = MIMEMultipart()
+#email que envia
+sender =''
+#email que recive
+receiver =''
+
+message['From'] = sender
+message['To'] = receiver
+message['Subject'] = 'This email has an attacment, a pdf file'
+def crear_email(latest_file):
+    # Setup the MIME
+
+
+    binary_pdf = open(latest_file, 'rb')
+
+    payload = MIMEBase('application', 'octate-stream', Name=latest_file)
+    payload.set_payload((binary_pdf).read())
+
+    # enconding the binary into base64
+    encoders.encode_base64(payload)
+
+    # add header with pdf name
+    payload.add_header('Content-Decomposition', 'attachment', filename=latest_file)
+    message.attach(payload)
+
+def enviar_email():
+    session = smtplib.SMTP('smtp.gmail.com', 587)
+
+    # enable security
+    session.starttls()
+
+    #password del email que envia
+    password = ''
+    session.login(sender, password)
+
+    text = message.as_string()
+    session.sendmail(sender, receiver, text)
+    session.quit()
+    print('Mail Sent')
+
+
+
 for usuario in usrs:
     #hacemos el clear de los input
     driver.find_element(By.ID, 'pantalla:nif').clear()
@@ -98,9 +161,22 @@ for usuario in usrs:
             driver.find_element(By.XPATH, '//*[@id="pantalla:listaVallistaValores"]/tbody/tr/td[9]/div/a').click()
 
             driver.find_element(By.XPATH, '//*[@id="panelbotones"]/div[3]/img').click()
-            time.sleep(1)
-            driver.find_element(By.XPATH, '//*[@id="pantalla:tabladocumentosGroup"]/table[1]/tbody/tr/td[3]/a/i').click()
+            time.sleep(4)
+            search = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located(
+                    (By.XPATH, '//*[@id="pantalla:tabladocumentosGroup"]/table[1]/tbody/tr/td[3]/a/i')
+                )
+            )
+            search.click()
+            time.sleep(2)
 
+            #obtenemos el ultimo fichero descargado
+            latest_file = obtener_ultimo_fichero()
+            #creamos el email
+            crear_email(latest_file)
+
+#enviamos el email
+enviar_email()
 
 
 #Se abre el libro para poner los mensajes de resultado
@@ -117,7 +193,7 @@ for items in resultado:
 wb.save('suma.xlsx')
 #se cierra el libro
 wb.close()
+#se cierra el chromedriver
 driver.close()
-
 
 
